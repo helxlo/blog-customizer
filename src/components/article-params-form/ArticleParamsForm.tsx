@@ -11,15 +11,9 @@ import { RadioGroup } from '../radio-group';
 import { useOutsideClickClose } from '../select/hooks/useOutsideClickClose';
 
 import clsx from 'clsx';
-import {
-	ArticleStateType,
-	OptionType,
-	contentWidthArr,
-	fontColors,
-	fontFamilyOptions,
-	fontSizeOptions,
-	backgroundColors,
-} from 'src/constants/articleProps';
+import { ArticleStateType, OptionType, defaultArticleState, fontFamilyOptions, fontSizeOptions, fontColors,
+	backgroundColors, contentWidthArr
+ } from 'src/constants/articleProps';
 
 type ArticleParamsFormProps = {
 	currentArticleState: ArticleStateType;
@@ -28,9 +22,10 @@ type ArticleParamsFormProps = {
 
 export const ArticleParamsForm = ({
 	currentArticleState,
-	setCurrentArticleState,
+	setCurrentArticleState
 }: ArticleParamsFormProps) => {
-	const [isOpen, setIsOpen] = useState<boolean>(false);
+
+	const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
 	const rootRef = useRef<HTMLDivElement>(null);
 
 	const [newFontColor, setNewFontColor] = useState<OptionType>(
@@ -54,10 +49,10 @@ export const ArticleParamsForm = ({
 	);
 
 	useOutsideClickClose({
-		isOpen,
+		isMenuOpen,
 		rootRef,
-		onClose: () => setIsOpen(!isOpen),
-		onChange: setIsOpen,
+		onClose: () => setIsMenuOpen(!isMenuOpen),
+		onChange: setIsMenuOpen,
 	});
 
 	const handleSubmitForm = (e: SyntheticEvent<HTMLFormElement>) => {
@@ -72,11 +67,15 @@ export const ArticleParamsForm = ({
 		});
 	};
 
+		const handleResetForm = () => {
+		setCurrentArticleState(defaultArticleState)
+	}
+
 	return (
 		<div ref={rootRef}>
-			<ArrowButton isOpen={isOpen} onClick={() => setIsOpen(!isOpen)} />
+			<ArrowButton isOpen={isMenuOpen} onClick={() => setIsMenuOpen(!isMenuOpen)} />
 			<aside
-				className={clsx(styles.container, isOpen && styles.container_open)}>
+				className={clsx(styles.container, isMenuOpen && styles.container_open)}>
 				<form onSubmit={handleSubmitForm} className={styles.form}>
 					<Text as='h1' size={31} weight={800} uppercase dynamicLite>
 						Задайте параметры
@@ -119,7 +118,7 @@ export const ArticleParamsForm = ({
 					/>
 
 					<div className={styles.bottomContainer}>
-						<Button title='Сбросить' type='reset' />
+						<Button title='Сбросить' type='reset' onClick={handleResetForm}/>
 						<Button title='Применить' type='submit' />
 					</div>
 				</form>
